@@ -1,0 +1,138 @@
+import 'react-native-gesture-handler';
+import React, {Component} from 'react';
+import {
+  NavigationContainer,
+  DarkTheme,
+  StackActions,
+} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import Entypo from 'react-native-vector-icons/Entypo';
+import Octicons from 'react-native-vector-icons/Octicons';
+import {
+  BdPage,
+  ProfilePage,
+  WorldPage,
+  SignInPage,
+  SignUpPage,
+  LandingPage,
+} from './Screens';
+import {SignIn} from './src/screens';
+
+const Tabs = createBottomTabNavigator();
+const HomeStack = createStackNavigator();
+const WorldStack = createStackNavigator();
+const ProfileStack = createStackNavigator();
+const Drawer = createDrawerNavigator();
+const Stack = createStackNavigator();
+const SignStack = createStackNavigator();
+
+const MyTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    primary: '#fff',
+    background: '#20244b',
+    card: '#202443',
+    text: '#fff',
+    border: '#ffffff',
+  },
+};
+
+const HomeStackScreen = ({navigation}) => (
+  <HomeStack.Navigator
+    screenOptions={{
+      headerRight: () => (
+        <Entypo
+          onPress={() => navigation.toggleDrawer()}
+          name={'menu'}
+          size={30}
+          color={'#fff'}
+        />
+      ),
+    }}>
+    <HomeStack.Screen name="COVID19: Bangladesh" component={BdPage} />
+    <HomeStack.Screen name="COVID19" component={ProfilePage} />
+  </HomeStack.Navigator>
+);
+
+const WorldStackScreen = ({navigation}) => (
+  <WorldStack.Navigator
+    screenOptions={{
+      headerRight: () => (
+        <Entypo
+          onPress={() => navigation.toggleDrawer()}
+          name={'menu'}
+          size={30}
+          color={'black'}
+        />
+      ),
+    }}>
+    <WorldStack.Screen name="COVID19: Global" component={WorldPage} />
+  </WorldStack.Navigator>
+);
+
+const ProfileStackScreen = ({navigation}) => (
+  <ProfileStack.Navigator
+    screenOptions={{
+      headerRight: () => (
+        <Entypo
+          onPress={() => navigation.toggleDrawer()}
+          name={'menu'}
+          size={30}
+          color={'black'}
+        />
+      ),
+    }}>
+    <ProfileStack.Screen name="ProfilePage" component={ProfilePage} />
+  </ProfileStack.Navigator>
+);
+
+const TabsScreen = () => (
+  <Tabs.Navigator
+    screenOptions={({route}) => ({
+      tabBarIcon: ({focused, color, size}) => {
+        let iconName;
+
+        if (route.name === 'BD') {
+          iconName = focused ? 'home' : 'home';
+        } else if (route.name === 'World') {
+          iconName = focused ? 'globe' : 'globe';
+        }
+        return <Octicons name={iconName} size={size} color={color} />;
+      },
+    })}
+    tabBarOptions={{
+      activeBackgroundColor: '#202443',
+      inactiveBackgroundColor: '#202443',
+      activeTintColor: '#fff',
+      inactiveTintColor: '#676975',
+    }}>
+    <Tabs.Screen name="BD" component={HomeStackScreen} />
+    <Tabs.Screen name="World" component={WorldStackScreen} />
+  </Tabs.Navigator>
+);
+const DrawerScreen = () => (
+  <Drawer.Navigator>
+    <Drawer.Screen name="Home" component={TabsScreen} />
+    <Drawer.Screen name="Profile" component={ProfileStackScreen} />
+  </Drawer.Navigator>
+);
+const SignScreen = ({navigation}) => (
+  <SignStack.Navigator>
+    <SignStack.Screen name="SignInPage" component={SignInPage} />
+    <SignStack.Screen name="SignUpPage" component={SignUpPage} />
+  </SignStack.Navigator>
+);
+const userToken = 1;
+
+export default class Navigator extends Component {
+  render() {
+    return (
+      <NavigationContainer theme={MyTheme}>
+        {userToken == 1 ? <SignScreen /> : <DrawerScreen />}
+      </NavigationContainer>
+    );
+  }
+}

@@ -1,0 +1,241 @@
+import React, {Component, useState} from 'react';
+import {
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  ImageBackground,
+  Button,
+  ScrollView,
+} from 'react-native';
+import Input from '../components/common/Input';
+import {Formik, useFormik} from 'formik';
+import {Mutation} from '@apollo/react-components';
+import {gql} from 'apollo-boost';
+
+const REGISTER_USER = gql`
+  mutation createUser(
+    $email: String
+    $mobile: String!
+    $password: String!
+    $confirmPassword: String!
+    $firstName: String!
+    $lastName: String!
+    $gender: String
+    $city: String
+    $country: String
+  ) {
+    createUser(
+      email: $email
+      mobile: $mobile
+      password: $password
+      confirmPassword: $confirmPassword
+      firstName: $firstName
+      lastName: $lastName
+      gender: $gender
+      city: $city
+      country: $country
+    ) {
+      id
+    }
+  }
+`;
+
+export default function SignUp(props) {
+  return (
+    <>
+      <Mutation mutation={REGISTER_USER}>
+        {(createUser, {error, loading}) => (
+          <Formik
+            initialValues={{
+              email: '',
+              mobile: '',
+              password: '',
+              confirmPassword: '',
+              firstName: '',
+              lastName: '',
+              gender: '',
+              city: '',
+              country: 'BD',
+            }}
+            onSubmit={async (data, actions) => {
+              // e.preventDefault();
+
+              const response = await createUser({
+                variables: {
+                  ...data,
+                },
+              });
+              alert(response);
+              actions.resetForm();
+              console.log(response);
+            }}>
+            {({handleChange, handleBlur, handleSubmit, values}) => (
+              <ScrollView style={styles.container}>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginTop: 0,
+                    maginBottom: 0,
+                  }}>
+                  <Text style={{color: '#fff', fontSize: 20}}>Register</Text>
+                </View>
+                <View>
+                  <TextInput
+                    placeholder="firstName"
+                    nativeID="firstName"
+                    value={values.firstName}
+                    onChangeText={handleChange('firstName')}
+                    style={{
+                      height: 40,
+                      backgroundColor: '#fff',
+                      color: '#000',
+                      borderColor: 'gray',
+                      borderWidth: 1,
+                      marginTop: 10,
+                    }}
+                  />
+                  <TextInput
+                    placeholder="Last Name"
+                    nativeID="lastName"
+                    value={values.lastName}
+                    onChangeText={handleChange('lastName')}
+                    style={{
+                      height: 40,
+                      backgroundColor: '#fff',
+                      color: '#000',
+                      borderColor: 'gray',
+                      borderWidth: 1,
+                      marginTop: 10,
+                    }}
+                  />
+                  <TextInput
+                    placeholder="mobile"
+                    nativeID="mobile"
+                    value={values.mobile}
+                    onChangeText={handleChange('mobile')}
+                    style={{
+                      height: 40,
+                      backgroundColor: '#fff',
+                      color: '#000',
+                      borderColor: 'gray',
+                      borderWidth: 1,
+                      marginTop: 10,
+                    }}
+                  />
+                  <TextInput
+                    placeholder="email"
+                    nativeID="email"
+                    value={values.email}
+                    onChangeText={handleChange('email')}
+                    style={{
+                      height: 40,
+                      backgroundColor: '#fff',
+                      color: '#000',
+                      borderColor: 'gray',
+                      borderWidth: 1,
+                      marginTop: 10,
+                    }}
+                  />
+                  <TextInput
+                    placeholder="gender"
+                    nativeID="gender"
+                    value={values.gender}
+                    onChangeText={handleChange('gender')}
+                    style={{
+                      height: 40,
+                      backgroundColor: '#fff',
+                      color: '#000',
+                      borderColor: 'gray',
+                      borderWidth: 1,
+                      marginTop: 10,
+                    }}
+                  />
+                  <TextInput
+                    placeholder="city"
+                    nativeID="city"
+                    value={values.city}
+                    onChangeText={handleChange('city')}
+                    style={{
+                      height: 40,
+                      backgroundColor: '#fff',
+                      color: '#000',
+                      borderColor: 'gray',
+                      borderWidth: 1,
+                      marginTop: 10,
+                    }}
+                  />
+                  <TextInput
+                    placeholder="country"
+                    nativeID="country"
+                    value={values.country}
+                    onChangeText={handleChange('country')}
+                    style={{
+                      height: 40,
+                      backgroundColor: '#fff',
+                      color: '#000',
+                      borderColor: 'gray',
+                      borderWidth: 1,
+                      marginTop: 10,
+                    }}
+                  />
+                  <TextInput
+                    placeholder="Password"
+                    nativeID="password"
+                    value={values.password}
+                    onChangeText={handleChange('password')}
+                    style={{
+                      height: 40,
+                      backgroundColor: '#fff',
+                      color: '#000',
+                      borderColor: 'gray',
+                      borderWidth: 1,
+                      marginTop: 10,
+                    }}
+                  />
+                  <TextInput
+                    placeholder="Confirm Password"
+                    nativeID="confirmPassword"
+                    value={values.confirmPassword}
+                    onChangeText={handleChange('confirmPassword')}
+                    style={{
+                      height: 40,
+                      backgroundColor: '#fff',
+                      color: '#000',
+                      borderColor: 'gray',
+                      borderWidth: 1,
+                      marginTop: 10,
+                    }}
+                  />
+
+                  <Button
+                    style={{
+                      padding: 20,
+                    }}
+                    title="Sign Up"
+                    onPress={handleSubmit}
+                  />
+                </View>
+                <Button
+                  style={{
+                    padding: 20,
+                  }}
+                  title="Sign In"
+                  onPress={() => props.navigation.navigate('SignIn')}
+                />
+              </ScrollView>
+            )}
+          </Formik>
+        )}
+      </Mutation>
+    </>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 50,
+  },
+});
